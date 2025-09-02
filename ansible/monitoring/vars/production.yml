@@ -1,0 +1,6 @@
+---
+prometheus_domain: prometheus.dump.hr
+alertmanager_domain: alertmanager.dump.hr
+grafana_domain: grafana.dump.hr
+loki_domain: loki.dump.hr
+traefik_domain: traefik.dump.hr

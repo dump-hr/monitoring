@@ -45,8 +45,8 @@ variable "create_elastic_ip" {
 
 variable "website_domain" {
   description = "Domain name for hosted website."
-  type        = string
-  default     = ""
+  type        = list(string)
+  default     = []
 }
 
 variable "cloudflare_zone_id" {

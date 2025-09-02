@@ -11,13 +11,13 @@ fi
 shift 2
 cd -P -- "$(dirname -- "$0")" || exit 1
 
-if [ ! -f "../ansible/inventories/$ANSIBLE_ENV.aws_ec2.yml" ]; then
-  echo "Environment '$ANSIBLE_ENV' does not exist"
+if [ ! -d "../ansible/$ANSIBLE_COMPONENT" ]; then
+  echo "Component '$ANSIBLE_COMPONENT' does not exist"
   exit 1
 fi
 
-if [ ! -d "../ansible/playbooks/$ANSIBLE_COMPONENT" ]; then
-  echo "Component '$ANSIBLE_COMPONENT' does not exist"
+if [ ! -f "../ansible/$ANSIBLE_COMPONENT/inventories/$ANSIBLE_ENV.aws_ec2.yml" ]; then
+  echo "Environment '$ANSIBLE_ENV' does not exist"
   exit 1
 fi
 
@@ -25,9 +25,9 @@ fi
 
 cd ../ansible || exit 1
 
-ansible-playbook "playbooks/$ANSIBLE_COMPONENT/playbook.yml" \
-  -i "inventories/$ANSIBLE_ENV.aws_ec2.yml" \
-  -e "@vars/$ANSIBLE_ENV.yml" "$@"
+ansible-playbook "$ANSIBLE_COMPONENT/playbook.yml" \
+  -i "$ANSIBLE_COMPONENT/inventories/$ANSIBLE_ENV.aws_ec2.yml" \
+  -e "@$ANSIBLE_COMPONENT/vars/$ANSIBLE_ENV.yml" "$@"
 status=$?
 
 cd - >/dev/null || exit 1

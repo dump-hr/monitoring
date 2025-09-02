@@ -1,16 +1,22 @@
 #!/bin/sh
 
 ANSIBLE_ENV=$1;
+ANSIBLE_COMPONENT=$2;
 
-if [ -z "$ANSIBLE_ENV" ]; then
-  echo "Usage: $0 <environment> <arguments>"
+if [ -z "$ANSIBLE_ENV" ] || [ -z "$ANSIBLE_COMPONENT" ]; then
+  echo "Usage: $0 <environment> <component> <arguments>"
   exit 1
 fi
 
-shift
+shift 2
 cd -P -- "$(dirname -- "$0")" || exit 1
 
-if [ ! -f "../ansible/inventories/$ANSIBLE_ENV.aws_ec2.yml" ]; then
+if [ ! -d "../ansible/$ANSIBLE_COMPONENT" ]; then
+  echo "Component '$ANSIBLE_COMPONENT' does not exist"
+  exit 1
+fi
+
+if [ ! -f "../ansible/$ANSIBLE_COMPONENT/inventories/$ANSIBLE_ENV.aws_ec2.yml" ]; then
   echo "Environment '$ANSIBLE_ENV' does not exist"
   exit 1
 fi
@@ -18,8 +24,8 @@ fi
 ./ssh-agent.sh "$ANSIBLE_ENV" load
 
 hosts=$(
-  ansible-inventory -i "../ansible/inventories/$ANSIBLE_ENV.aws_ec2.yml" --list \
-  | jq -r .web.hosts[]
+  ansible-inventory -i "../ansible/monitoring/inventories/$ANSIBLE_ENV.aws_ec2.yml" --list \
+  | jq -r .monitoring.hosts[]
 )
 
 for host in $hosts; do

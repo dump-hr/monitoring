@@ -54,13 +54,12 @@ module "web" {
   subnets                   = data.aws_subnets.public_subnets.ids
   security_groups           = data.aws_security_groups.public_sg.ids
   ssh_public_key            = file("../../../../ssh-keys/production.pub")
-  website_domain            = "grafana.dump.hr"
+  website_domain            = ["grafana.dump.hr", "prometheus.dump.hr", "loki.dump.hr", "alertmanager.dump.hr", "traefik.dump.hr"]
   cloudflare_zone_id        = data.cloudflare_zone.dump_hr.id
-  # website_domain            = ["grafana.dump.hr", "prometheus.dump.hr", "loki.dump.hr"]
 
   tags = {
     Project     = "dump-monitoring"
-    Role        = "web"
+    Role        = "monitoring"
     Environment = "production"
   }
 }

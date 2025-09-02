@@ -1,0 +1,13 @@
+---
+- name: Create Grafana docker container
+  docker_container:
+    name: grafana
+    image: grafana/grafana:latest
+    restart_policy: unless-stopped
+    volumes:
+      - "grafana-storage:/var/lib/grafana"
+    networks:
+      - name: traefiknet
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.grafana.rule: "Host(`{{ grafana_domain }}`)"

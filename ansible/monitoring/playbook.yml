@@ -1,0 +1,37 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Check if inventory is empty.
+      fail:
+        msg: "[ERROR] Empty inventory. No host available."
+      when: groups.all|length == 0
+
+- hosts: monitoring
+  remote_user: admin
+
+  pre_tasks:
+    - name: Update apt cache if needed.
+      become: true
+      apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+  roles:
+    # - role: geerlingguy.docker
+    #   become: true
+    #   vars:
+    #     docker_users:
+    #       - admin
+    - role: traefik
+    - role: prometheus
+      vars:
+        prometheus_domain: "{{ prometheus_domain }}"
+    # - role: alertmanager
+    #   vars:
+    #     alertmanager_domain: "{{ alertmanager_domain }}"
+    - role: grafana
+      vars:
+        grafana_domain: "{{ grafana_domain }}"
+    # - role: loki
+    #   vars:
+    #     loki_domain: "{{ loki_domain }}"

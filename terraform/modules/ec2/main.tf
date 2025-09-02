@@ -57,10 +57,16 @@ resource "aws_eip_association" "eip_assoc" {
 # TODO: implement AWS ALB when var.instance_count > 1
 
 resource "cloudflare_record" "website" {
-  count           = (var.website_domain != "" && var.cloudflare_zone_id != "") ? 1 : 0
+  for_each = {
+    for domain in var.website_domain : domain => {
+      name    = domain
+      content = aws_eip.eip[0].public_ip
+    }
+  }
+
   zone_id         = var.cloudflare_zone_id
-  name            = var.website_domain
-  value           = aws_eip.eip[0].public_ip
+  name            = each.value.name
+  content         = each.value.content
   type            = "A"
   proxied         = true
   allow_overwrite = true
