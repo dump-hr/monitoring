@@ -1,8 +1,10 @@
 ---
-- name: Create Grafana docker container
+- name: Create new Grafana docker container
   docker_container:
     name: grafana
     image: grafana/grafana:latest
+    pull: yes
+    recreate: true
     restart_policy: unless-stopped
     volumes:
       - "grafana-storage:/var/lib/grafana"
@@ -11,3 +13,9 @@
     labels:
       traefik.enable: "true"
       traefik.http.routers.grafana.rule: "Host(`{{ grafana_domain }}`)"
+      traefik.http.middlewares.grafana-retry.retry.attempts: "5"
+      traefik.http.middlewares.grafana-retry.retry.initialinterval: "100ms"
+      traefik.http.middlewares.grafana-cors.headers.accesscontrolallowmethods: "*"
+      traefik.http.routers.grafana.middlewares: "grafana-retry, grafana-cors"
+      traefik.http.services.grafana.loadbalancer.server.scheme: "http"
+

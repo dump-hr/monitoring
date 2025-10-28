@@ -8,6 +8,8 @@
 
 - hosts: monitoring
   remote_user: admin
+  vars_files:
+    - vars/production.yml
 
   pre_tasks:
     - name: Update apt cache if needed.
@@ -16,22 +18,25 @@
         update_cache: true
         cache_valid_time: 3600
 
+    - name: Prune old Docker images older than 72h
+      become: true
+      docker_prune:
+        images: true
+        filters:
+          until: "48h"
+
   roles:
-    # - role: geerlingguy.docker
-    #   become: true
+    - role: geerlingguy.docker
+      become: true
     #   vars:
     #     docker_users:
     #       - admin
     - role: traefik
     - role: prometheus
-      vars:
-        prometheus_domain: "{{ prometheus_domain }}"
     # - role: alertmanager
     #   vars:
     #     alertmanager_domain: "{{ alertmanager_domain }}"
     - role: grafana
-      vars:
-        grafana_domain: "{{ grafana_domain }}"
     # - role: loki
     #   vars:
     #     loki_domain: "{{ loki_domain }}"

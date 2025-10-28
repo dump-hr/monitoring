@@ -1,8 +1,10 @@
 ---
-- name: Create traefik docker container
+- name: Create alertmanager docker container
   docker_container:
-    name: traefik
-    image: traefik:v2.10
+    name: alertmanager
+    image: prom/alertmanager:latest
+    pull: yes
+    recreate: true
     restart_policy: unless-stopped
     command:
       - "--providers.docker=true"

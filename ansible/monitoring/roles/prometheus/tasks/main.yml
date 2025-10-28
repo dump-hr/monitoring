@@ -19,6 +19,8 @@
   docker_container:
     name: prometheus
     image: prom/prometheus:latest
+    pull: yes
+    recreate: true
     restart_policy: unless-stopped
     volumes:
       - "/home/{{ ansible_user }}/prometheus.yml:/etc/prometheus/prometheus.yml"
@@ -29,3 +31,8 @@
     labels:
       traefik.enable: "true"
       traefik.http.routers.prometheus.rule: "Host(`{{ prometheus_domain }}`)"
+      traefik.http.middlewares.prometheus-retry.retry.attempts: "5"
+      traefik.http.middlewares.prometheus-retry.retry.initialinterval: "100ms"
+      traefik.http.middlewares.prometheus-cors.headers.accesscontrolallowmethods: "*"
+      traefik.http.routers.prometheus.middlewares: "prometheus-retry, prometheus-cors"
+      traefik.http.services.prometheus.loadbalancer.server.scheme: "http"
