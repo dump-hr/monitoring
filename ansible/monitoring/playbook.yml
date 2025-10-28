@@ -22,7 +22,7 @@
       become: true
       docker_prune:
         images: true
-        filters:
+        images_filters:
           until: "48h"
 
   roles:
