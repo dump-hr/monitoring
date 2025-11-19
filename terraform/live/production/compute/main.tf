@@ -48,7 +48,7 @@ module "web" {
   source = "../../../modules/ec2"
 
   name_prefix               = "dump-monitoring"
-  instance_type             = "t3a.small"
+  instance_type             = "t3a.micro"
   instance_count            = 1
   instance_root_device_size = 100
   subnets                   = data.aws_subnets.public_subnets.ids
