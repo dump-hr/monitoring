@@ -26,3 +26,10 @@ scrape_configs:
     static_configs:
       - targets:
           - 193.198.39.243:9145
+
+  - job_name: ddays-exporter
+    metrics_path: /api/metrics
+    scheme: https
+    static_configs:
+      - targets:
+          - days.dump.hr:443
