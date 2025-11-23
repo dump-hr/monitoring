@@ -32,4 +32,4 @@ scrape_configs:
     scheme: https
     static_configs:
       - targets:
-          - days.dump.hr:443
+          - 35.156.24.115:443
