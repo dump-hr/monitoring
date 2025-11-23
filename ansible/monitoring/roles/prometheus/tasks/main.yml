@@ -26,8 +26,6 @@
       - "/home/{{ ansible_user }}/prometheus.yml:/etc/prometheus/prometheus.yml"
       - "/home/{{ ansible_user }}/alerts/:/etc/prometheus/alerts/"
       - "prometheus-storage:/prometheus"
-    command:
-      - "--web.enable-remote-write-receiver"
     networks:
       - name: traefiknet
     labels:

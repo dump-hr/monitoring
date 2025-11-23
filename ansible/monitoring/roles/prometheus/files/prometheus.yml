@@ -2,6 +2,9 @@ global:
   scrape_interval: 15s
   evaluation_interval: 15s
 
+enable_features:
+  - remote-write-receiver
+
 rule_files:
   - "/etc/prometheus/alerts/*.yml"
 
