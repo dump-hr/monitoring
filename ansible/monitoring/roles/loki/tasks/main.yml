@@ -1,4 +1,15 @@
 ---
+- name: Create Loki config directory
+      file:
+        path: /opt/loki
+        state: directory
+        mode: '0755'
+
+- name: Copy Loki config
+      copy:
+        src: "{{ role_path }}/files/loki-config.yaml"
+        dest: "/opt/loki/local-config.yaml"
+
 - name: Create loki docker container
   docker_container:
     name: loki
@@ -6,15 +17,18 @@
     pull: yes
     recreate: true
     restart_policy: unless-stopped
-    command:
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--providers.docker.network=traefiknet"
-      - "--entrypoints.web.address=:80"
-      - "--accesslog=true"
-    ports:
-      - "80:80"
+    command: -config.file=/etc/loki/local-config.yaml
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "/opt/loki/local-config.yaml:/etc/loki/local-config.yaml"
+      - "loki_data:/loki"
     networks:
       - name: traefiknet
+    lables:
+      traefik.enable: "true"
+      traefik.http.routers.loki.rule: "Host(`{{ loki_domain }}`)"
+      traefik.http.services.loki.loadbalancer.server.port: "3100"
+      traefik.http.services.loki.loadbalancer.server.scheme: "http"
+      traefik.http.middlewares.loki-retry.retry.attempts: "5"
+      traefik.http.middlewares.loki-retry.retry.initialinterval: "100ms"
+      traefik.http.middlewares.loki-cors.headers.accesscontrolallowmethods: "*"
+      traefik.http.routers.loki.middlewares: "loki-retry, loki-cors"
