@@ -12,6 +12,13 @@
     - vars/production.yml
 
   pre_tasks:
+    - name: Load SOPS encrypted secrets
+      community.sops.load_vars:
+        file: "{{ playbook_dir }}/group_vars/all/secrets.enc.yaml"
+        expressions: ignore
+      environment:
+        AWS_PROFILE: dump-monitoring
+
     - name: Update apt cache if needed.
       become: true
       apt:
@@ -28,13 +35,15 @@
   roles:
     - role: geerlingguy.docker
       become: true
-    #   vars:
-    #     docker_users:
-    #       - admin
+      vars:
+        docker_users:
+          - admin
     - role: traefik
     - role: prometheus
-    # - role: alertmanager
-    #   vars:
-    #     alertmanager_domain: "{{ alertmanager_domain }}"
+      vars:
+        prometheus_domain: "{{ prometheus_domain }}"
+    - role: alertmanager
+      vars:
+        alertmanager_domain: "{{ alertmanager_domain }}"
     - role: grafana
     - role: loki

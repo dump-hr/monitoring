@@ -1,5 +1,13 @@
 ---
-- name: Create alertmanager docker container
+- name: Template alertmanager.yml file
+  template:
+    src: "{{ role_path }}/templates/alertmanager.yml.j2"
+    dest: "/home/{{ ansible_user }}/alertmanager.yml"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0606
+
+- name: Create Alertmanager docker container
   docker_container:
     name: alertmanager
     image: prom/alertmanager:latest
@@ -7,14 +15,18 @@
     recreate: true
     restart_policy: unless-stopped
     command:
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--providers.docker.network=traefiknet"
-      - "--entrypoints.web.address=:80"
-      - "--accesslog=true"
-    ports:
-      - "80:80"
+      - "--config.file=/etc/alertmanager/alertmanager.yml"
+      - "--storage.path=/alertmanager"
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "/home/{{ ansible_user }}/alertmanager.yml:/etc/alertmanager/alertmanager.yml"
+      - "alertmanager-data:/alertmanager"
     networks:
       - name: traefiknet
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.alertmanager.rule: "Host(`{{ alertmanager_domain }}`)"
+      traefik.http.middlewares.alertmanager-retry.retry.attempts: "5"
+      traefik.http.middlewares.alertmanager-retry.retry.initialinterval: "100ms"
+      traefik.http.middlewares.alertmanager-cors.headers.accesscontrolallowmethods: "*"
+      traefik.http.routers.alertmanager.middlewares: "alertmanager-retry, alertmanager-cors"
+      traefik.http.services.alertmanager.loadbalancer.server.scheme: "http"
