@@ -1,0 +1,92 @@
+groups:
+  - name: ZFS
+    rules:
+      - alert: ZfsPoolUnhealthy
+        expr: 'zfs_pool_health != 0'
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: ZFS pool unhealthy (instance {{ $labels.instance }})
+          description: "ZFS pool {{ $labels.pool }} is not healthy (state: {{ $labels.state }})\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+      - alert: ZfsPoolDegraded
+        expr: 'zfs_pool_degraded == 1'
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: ZFS pool degraded (instance {{ $labels.instance }})
+          description: "ZFS pool {{ $labels.pool }} is in a degraded state. Check disk health immediately.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+      - alert: ZfsPoolCapacityWarning
+        expr: '(zfs_pool_allocated_bytes / zfs_pool_size_bytes) * 100 > 80'
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: ZFS pool capacity warning (instance {{ $labels.instance }})
+          description: "ZFS pool {{ $labels.pool }} is over 80% full. Current usage: {{ $value | printf \"%.1f\" }}%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+      - alert: ZfsPoolCapacityCritical
+        expr: '(zfs_pool_allocated_bytes / zfs_pool_size_bytes) * 100 > 90'
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: ZFS pool capacity critical (instance {{ $labels.instance }})
+          description: "ZFS pool {{ $labels.pool }} is over 90% full. Immediate action required! Current usage: {{ $value | printf \"%.1f\" }}%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+      - alert: ZfsPoolReadErrors
+        expr: 'increase(zfs_pool_read_errors_total[1h]) > 0'
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: ZFS pool read errors detected (instance {{ $labels.instance }})
+          description: "ZFS pool {{ $labels.pool }} has experienced read errors in the last hour\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+      - alert: ZfsPoolWriteErrors
+        expr: 'increase(zfs_pool_write_errors_total[1h]) > 0'
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: ZFS pool write errors detected (instance {{ $labels.instance }})
+          description: "ZFS pool {{ $labels.pool }} has experienced write errors in the last hour\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+      - alert: ZfsPoolChecksumErrors
+        expr: 'increase(zfs_pool_checksum_errors_total[1h]) > 0'
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: ZFS pool checksum errors detected (instance {{ $labels.instance }})
+          description: "ZFS pool {{ $labels.pool }} has experienced checksum errors. This may indicate data corruption or failing disks.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+      - alert: ZfsDatasetQuotaWarning
+        expr: '(zfs_dataset_used_bytes / zfs_dataset_quota_bytes) * 100 > 80 and zfs_dataset_quota_bytes > 0'
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: ZFS dataset approaching quota (instance {{ $labels.instance }})
+          description: "ZFS dataset {{ $labels.name }} is over 80% of its quota. Current usage: {{ $value | printf \"%.1f\" }}%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+      - alert: ZfsExporterDown
+        expr: 'up{job="zfs-exporter"} == 0'
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: ZFS exporter down (instance {{ $labels.instance }})
+          description: "ZFS exporter is not responding. Cannot monitor ZFS health.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+      - alert: ZfsScrubError
+        expr: 'zfs_pool_scrub_errors > 0'
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: ZFS scrub found errors (instance {{ $labels.instance }})
+          description: "ZFS scrub on pool {{ $labels.pool }} found {{ $value }} errors. Check pool health immediately.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
