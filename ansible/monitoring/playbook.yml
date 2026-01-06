@@ -38,5 +38,5 @@
     #     alertmanager_domain: "{{ alertmanager_domain }}"
     - role: grafana
     - role: loki
-       vars:
-         loki_domain: "{{ loki_domain }}"
+        vars:
+          loki_domain: "{{ loki_domain }}"
