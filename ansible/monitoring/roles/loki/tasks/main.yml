@@ -1,14 +1,19 @@
 ---
 - name: Create Loki config directory
-      file:
-        path: /opt/loki
-        state: directory
-        mode: '0755'
+  file:
+    path: /home/admin/loki
+    state: directory
+    mode: '0755'
+    owner: admin
+    group: admin
 
 - name: Copy Loki config
-      copy:
-        src: "{{ role_path }}/files/loki-config.yaml"
-        dest: "/opt/loki/local-config.yaml"
+  copy:
+    src: "{{ role_path }}/files/loki-config.yaml"
+    dest: "/home/admin/loki/local-config.yaml"
+    owner: admin
+    group: admin
+    mode: '0644'
 
 - name: Create loki docker container
   docker_container:
@@ -19,11 +24,11 @@
     restart_policy: unless-stopped
     command: -config.file=/etc/loki/local-config.yaml
     volumes:
-      - "/opt/loki/local-config.yaml:/etc/loki/local-config.yaml"
+      - "/home/admin/loki/local-config.yaml:/etc/loki/local-config.yaml"
       - "loki_data:/loki"
     networks:
       - name: traefiknet
-    lables:
+    labels:
       traefik.enable: "true"
       traefik.http.routers.loki.rule: "Host(`{{ loki_domain }}`)"
       traefik.http.services.loki.loadbalancer.server.port: "3100"
