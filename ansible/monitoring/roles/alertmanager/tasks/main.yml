@@ -30,3 +30,5 @@
       traefik.http.middlewares.alertmanager-cors.headers.accesscontrolallowmethods: "*"
       traefik.http.routers.alertmanager.middlewares: "alertmanager-retry, alertmanager-cors"
       traefik.http.services.alertmanager.loadbalancer.server.scheme: "http"
+      traefik.http.middlewares.monitoring-auth.basicauth.users: "admin:$apr1$yHJldjKp$YrCGejwxLiBLXKiiDKpbU1"
+      traefik.http.routers.alertmanager.middlewares: "monitoring-auth"
