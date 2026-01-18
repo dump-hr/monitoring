@@ -3,9 +3,9 @@ groups:
     rules:
       - alert: WebsiteDown
         expr: probe_success == 0
-        for: 2m
+        for: 1m
         labels:
           severity: critical
         annotations:
           summary: "Website Down: {{ $labels.instance }}"
-          description: "The website {{ $labels.instance }} has been unreachable for more than 2 minutes."
+          description: "The website {{ $labels.instance }} has been unreachable for more than 1 minute."
