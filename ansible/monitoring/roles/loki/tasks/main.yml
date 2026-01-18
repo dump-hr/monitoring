@@ -1,18 +1,10 @@
 ---
-- name: Create Loki config directory
-  file:
-    path: /home/admin/loki
-    state: directory
-    mode: '0755'
-    owner: admin
-    group: admin
-
 - name: Copy Loki config
   copy:
     src: "{{ role_path }}/files/loki-config.yaml"
-    dest: "/home/admin/loki/local-config.yaml"
-    owner: admin
-    group: admin
+    dest: "/home/{{ ansible_user }}/loki/local-config.yaml"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
     mode: '0644'
 
 - name: Create loki docker container
@@ -24,7 +16,7 @@
     restart_policy: unless-stopped
     command: -config.file=/etc/loki/local-config.yaml
     volumes:
-      - "/home/admin/loki/local-config.yaml:/etc/loki/local-config.yaml"
+      - "/home/{{ ansible_user }}/loki/local-config.yaml:/etc/loki/local-config.yaml"
       - "loki_data:/loki"
     networks:
       - name: traefiknet
@@ -37,5 +29,5 @@
       traefik.http.middlewares.loki-retry.retry.initialinterval: "100ms"
       traefik.http.middlewares.loki-cors.headers.accesscontrolallowmethods: "*"
       traefik.http.routers.loki.middlewares: "loki-retry, loki-cors"
-      traefik.http.middlewares.monitoring-auth.basicauth.users: "admin:$apr1$yHJldjKp$YrCGejwxLiBLXKiiDKpbU1"
+      traefik.http.middlewares.monitoring-auth.basicauth.users: "{{ ansible_user }}:$apr1$yHJldjKp$YrCGejwxLiBLXKiiDKpbU1"
       traefik.http.routers.loki.middlewares: "monitoring-auth"

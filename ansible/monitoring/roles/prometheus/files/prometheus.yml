@@ -37,3 +37,17 @@ scrape_configs:
     static_configs:
       - targets:
           - 35.156.24.115:80
+
+  - job_name: 'blackbox'
+    params:
+      module: [http_2xx]
+    file_sd_configs:
+      - files:
+        - '/etc/prometheus/targets/blackbox_targets.yml'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox:9115

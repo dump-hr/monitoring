@@ -39,6 +39,7 @@
         docker_users:
           - admin
     - role: traefik
+    - role: blackbox
     - role: prometheus
       vars:
         prometheus_domain: "{{ prometheus_domain }}"

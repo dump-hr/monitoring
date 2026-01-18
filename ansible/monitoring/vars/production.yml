@@ -4,3 +4,4 @@ alertmanager_domain: alertmanager.dump.hr
 grafana_domain: grafana.dump.hr
 loki_domain: loki.dump.hr
 traefik_domain: traefik.dump.hr
+blackbox_domain: blackbox.dump.hr

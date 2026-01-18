@@ -1,0 +1,34 @@
+---
+- name: Copy Blackbox config file
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/blackbox.yml"
+    dest: /home/{{ ansible_user }}/blackbox/blackbox.yml
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'
+  become: true
+
+- name: Create Blackbox docker container
+  docker_container:
+    name: blackbox
+    image: prometheus/blackbox-exporter:latest
+    pull: yes
+    recreate: true
+    restart_policy: unless-stopped
+    ports:
+      - "9115:9115"
+    volumes:
+      - "/home/{{ ansible_user }}/blackbox/blackbox.yml:/etc/blackbox/blackbox.yml"
+    networks:
+      - name: traefiknet
+    labels:
+      traefik.enable: "true"
+      traefik.http.services.blackbox.loadbalancer.server.port: "9115"
+      traefik.http.services.blackbox.loadbalancer.server.scheme: "http"
+      traefik.http.middlewares.monitoring-auth.basicauth.users: "admin:$apr1$yHJldjKp$YrCGejwxLiBLXKiiDKpbU1"
+      traefik.http.routers.blackbox.middlewares: "monitoring-auth"
+      traefik.http.routers.blackbox.rule: "Host(`{{ blackbox_domain }}`)"
+      traefik.http.middlewares.blackbox-retry.retry.initialinterval: "100ms"
+      traefik.http.middlewares.blackbox-cors.headers.accesscontrolallowmethods: "*"
+      traefik.http.routers.blackbox.middlewares: "blackbox-retry, blackbox-cors"
+    

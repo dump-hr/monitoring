@@ -1,0 +1,3 @@
+- targets:
+    - https://days.dump.hr/api/healthz
+    - https://dump.hr

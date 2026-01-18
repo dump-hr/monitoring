@@ -15,6 +15,14 @@
     group: "{{ ansible_user }}"
     mode: 0606
 
+- name: Copy blackbox target file
+  copy:
+    src: "{{ role_path }}/files/blackbox_targets.yml"
+    dest: "/home/{{ ansible_user }}/targets/blackbox_targets.yml"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0606
+
 - name: Create Prometheus docker container
   docker_container:
     name: prometheus
@@ -25,6 +33,7 @@
     volumes:
       - "/home/{{ ansible_user }}/prometheus.yml:/etc/prometheus/prometheus.yml"
       - "/home/{{ ansible_user }}/alerts/:/etc/prometheus/alerts/"
+      - "/home/{{ ansible_user }}/targets/:/etc/prometheus/targets/"
       - "prometheus-storage:/prometheus"
     networks:
       - name: traefiknet
