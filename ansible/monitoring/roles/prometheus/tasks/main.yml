@@ -51,7 +51,6 @@
       traefik.http.middlewares.prometheus-retry.retry.attempts: "5"
       traefik.http.middlewares.prometheus-retry.retry.initialinterval: "100ms"
       traefik.http.middlewares.prometheus-cors.headers.accesscontrolallowmethods: "*"
-      traefik.http.routers.prometheus.middlewares: "prometheus-retry, prometheus-cors"
       traefik.http.services.prometheus.loadbalancer.server.scheme: "http"
       traefik.http.middlewares.monitoring-auth.basicauth.users: "admin:$apr1$yHJldjKp$YrCGejwxLiBLXKiiDKpbU1"
-      traefik.http.routers.prometheus.middlewares: "monitoring-auth"
+      traefik.http.routers.prometheus.middlewares: "monitoring-auth prometheus-retry prometheus-cors"

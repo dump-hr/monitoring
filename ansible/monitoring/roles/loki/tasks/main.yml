@@ -28,6 +28,5 @@
       traefik.http.middlewares.loki-retry.retry.attempts: "5"
       traefik.http.middlewares.loki-retry.retry.initialinterval: "100ms"
       traefik.http.middlewares.loki-cors.headers.accesscontrolallowmethods: "*"
-      traefik.http.routers.loki.middlewares: "loki-retry, loki-cors"
       traefik.http.middlewares.monitoring-auth.basicauth.users: "{{ ansible_user }}:$apr1$yHJldjKp$YrCGejwxLiBLXKiiDKpbU1"
-      traefik.http.routers.loki.middlewares: "monitoring-auth"
+      traefik.http.routers.loki.middlewares: "monitoring-auth loki-retry loki-cors"

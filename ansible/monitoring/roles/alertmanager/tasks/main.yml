@@ -28,7 +28,6 @@
       traefik.http.middlewares.alertmanager-retry.retry.attempts: "5"
       traefik.http.middlewares.alertmanager-retry.retry.initialinterval: "100ms"
       traefik.http.middlewares.alertmanager-cors.headers.accesscontrolallowmethods: "*"
-      traefik.http.routers.alertmanager.middlewares: "alertmanager-retry, alertmanager-cors"
       traefik.http.services.alertmanager.loadbalancer.server.scheme: "http"
       traefik.http.middlewares.monitoring-auth.basicauth.users: "admin:$apr1$yHJldjKp$YrCGejwxLiBLXKiiDKpbU1"
-      traefik.http.routers.alertmanager.middlewares: "monitoring-auth"
+      traefik.http.routers.alertmanager.middlewares: "monitoring-auth alertmanager-retry alertmanager-cors"
