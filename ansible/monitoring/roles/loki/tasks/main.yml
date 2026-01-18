@@ -29,4 +29,4 @@
       traefik.http.middlewares.loki-retry.retry.initialinterval: "100ms"
       traefik.http.middlewares.loki-cors.headers.accesscontrolallowmethods: "*"
       traefik.http.middlewares.monitoring-auth.basicauth.users: "{{ ansible_user }}:$apr1$yHJldjKp$YrCGejwxLiBLXKiiDKpbU1"
-      traefik.http.routers.loki.middlewares: "monitoring-auth loki-retry loki-cors"
+      traefik.http.routers.loki.middlewares: "monitoring-auth, loki-retry, loki-cors"
