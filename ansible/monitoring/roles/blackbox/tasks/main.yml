@@ -25,7 +25,12 @@
       traefik.enable: "true"
       traefik.http.services.blackbox.loadbalancer.server.port: "9115"
       traefik.http.services.blackbox.loadbalancer.server.scheme: "http"
+      traefik.http.middlewares.blackbox-retry.retry.attempts: "5"
+      traefik.http.middlewares.blackbox-retry.retry.initialinterval: "100ms"
+      traefik.http.middlewares.blackbox-cors.headers.accesscontrolallowmethods: "*"
+      traefik.http.routers.blackbox.middlewares: "blackbox-retry, blackbox-cors"
       traefik.http.middlewares.monitoring-auth.basicauth.users: "admin:$apr1$yHJldjKp$YrCGejwxLiBLXKiiDKpbU1"
       traefik.http.routers.blackbox.middlewares: "monitoring-auth"
       traefik.http.routers.blackbox.rule: "Host(`{{ blackbox_domain }}`)"
+
     

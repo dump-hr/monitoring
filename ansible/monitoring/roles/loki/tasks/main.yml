@@ -2,7 +2,7 @@
 - name: Copy Loki config
   copy:
     src: "{{ role_path }}/files/loki-config.yaml"
-    dest: "/home/{{ ansible_user }}/local-config.yaml"
+    dest: "/home/{{ ansible_user }}/loki-config.yaml"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: '0644'
@@ -14,9 +14,9 @@
     pull: yes
     recreate: true
     restart_policy: unless-stopped
-    command: -config.file=/etc/loki/local-config.yaml
+    command: -config.file=/etc/loki/loki-config.yaml
     volumes:
-      - "/home/{{ ansible_user }}/local-config.yaml:/etc/loki/local-config.yaml"
+      - "/home/{{ ansible_user }}/loki-config.yaml:/etc/loki/loki-config.yaml"
       - "loki_data:/loki"
     networks:
       - name: traefiknet
