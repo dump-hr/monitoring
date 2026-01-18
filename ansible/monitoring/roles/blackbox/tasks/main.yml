@@ -2,7 +2,7 @@
 - name: Copy Blackbox config file
   ansible.builtin.copy:
     src: "{{ role_path }}/files/blackbox.yml"
-    dest: /home/{{ ansible_user }}/blackbox/blackbox.yml
+    dest: /home/{{ ansible_user }}/blackbox.yml
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: '0644'
@@ -18,7 +18,7 @@
     ports:
       - "9115:9115"
     volumes:
-      - "/home/{{ ansible_user }}/blackbox/blackbox.yml:/etc/blackbox/blackbox.yml"
+      - "/home/{{ ansible_user }}/blackbox.yml:/etc/blackbox/blackbox.yml"
     networks:
       - name: traefiknet
     labels:
