@@ -11,7 +11,7 @@
 - name: Create Blackbox docker container
   docker_container:
     name: blackbox
-    image: prometheus/blackbox-exporter:latest
+    image: prom/blackbox-exporter:latest
     pull: yes
     recreate: true
     restart_policy: unless-stopped
