@@ -39,6 +39,7 @@ scrape_configs:
           - 35.156.24.115:80
 
   - job_name: 'blackbox'
+    metrics_path: /probe
     params:
       module: [http_2xx]
     file_sd_configs:
