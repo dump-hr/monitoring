@@ -22,12 +22,12 @@ scrape_configs:
       - targets:
           - alertmanager:9093
 
-  - job_name: node-exporter
+  - job_name: NAS-node-exporter
     static_configs:
       - targets:
           - 193.198.39.243:9100
 
-  - job_name: zfs-exporter
+  - job_name: NAS-zfs-exporter
     static_configs:
       - targets:
           - 193.198.39.243:9145
@@ -37,6 +37,11 @@ scrape_configs:
     static_configs:
       - targets:
           - 35.156.24.115:80
+
+    - job_name: ddays-node-exporter
+    static_configs:
+      - targets:
+          - 35.156.24.115:9100
 
   - job_name: 'blackbox'
     metrics_path: /probe
