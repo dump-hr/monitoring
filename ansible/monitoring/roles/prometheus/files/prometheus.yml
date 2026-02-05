@@ -38,7 +38,7 @@ scrape_configs:
       - targets:
           - 35.156.24.115:80
 
-    - job_name: ddays-node-exporter
+  - job_name: ddays-node-exporter
     static_configs:
       - targets:
           - 35.156.24.115:9100
