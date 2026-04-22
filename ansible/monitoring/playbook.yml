@@ -38,8 +38,6 @@
       vars:
         docker_users:
           - admin
-    - role: wireguard
-      become: true
     - role: traefik
     - role: blackbox
     - role: prometheus

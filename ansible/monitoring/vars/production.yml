@@ -5,12 +5,3 @@ grafana_domain: grafana.dump.hr
 loki_domain: loki.dump.hr
 traefik_domain: traefik.dump.hr
 blackbox_domain: blackbox.dump.hr
-
-wireguard_server_address: 10.8.0.1/24
-wireguard_listen_port: 51820
-wireguard_egress_interface: eth0
-wireguard_peers: []
-# wireguard_peers:
-#   - name: mikrotik
-#     public_key: "<MIKROTIK_PUBLIC_KEY>"
-#     allowed_ips: 10.8.0.2/32

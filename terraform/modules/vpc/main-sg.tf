@@ -50,12 +50,33 @@ resource "aws_security_group_rule" "public_in_https" {
   security_group_id = aws_security_group.public.id
 }
 
-resource "aws_security_group_rule" "public_in_wireguard" {
+resource "aws_security_group_rule" "public_in_ipsec_ike" {
   type              = "ingress"
-  from_port         = 51820
-  to_port           = 51820
+  from_port         = 500
+  to_port           = 500
   protocol          = "udp"
   cidr_blocks       = ["0.0.0.0/0"]
+  description       = "IPsec IKE key exchange"
+  security_group_id = aws_security_group.public.id
+}
+
+resource "aws_security_group_rule" "public_in_ipsec_nat_t" {
+  type              = "ingress"
+  from_port         = 4500
+  to_port           = 4500
+  protocol          = "udp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  description       = "IPsec NAT traversal"
+  security_group_id = aws_security_group.public.id
+}
+
+resource "aws_security_group_rule" "public_in_ipsec_esp" {
+  type              = "ingress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "50"
+  cidr_blocks       = ["0.0.0.0/0"]
+  description       = "IPsec ESP (encrypted payload)"
   security_group_id = aws_security_group.public.id
 }
 
