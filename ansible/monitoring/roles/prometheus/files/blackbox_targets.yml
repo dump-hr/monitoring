@@ -2,3 +2,4 @@
     - https://days.dump.hr/api/healthz
     - https://dump.hr
     - https://safetynet-api-production.dump.hr/app/healthcheck
+    - https://turnir.dump.hr/api/healthz
