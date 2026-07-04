@@ -46,5 +46,6 @@
     - role: alertmanager
       vars:
         alertmanager_domain: "{{ alertmanager_domain }}"
+    - role: postgres-exporter
     - role: grafana
     - role: loki
