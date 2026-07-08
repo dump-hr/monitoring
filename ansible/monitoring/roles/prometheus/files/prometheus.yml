@@ -59,6 +59,12 @@ scrape_configs:
       - targets:
           - 3.65.62.185:9100
 
+  - job_name: safetynet-node-exporter
+    static_configs:
+      - targets:
+          - 3.75.129.152:9100
+
+
   - job_name: 'blackbox'
     metrics_path: /probe
     params:
