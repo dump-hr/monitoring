@@ -8,6 +8,9 @@
     restart_policy: unless-stopped
     volumes:
       - "grafana-storage:/var/lib/grafana"
+    env:
+      GF_USERS_AUTO_ASSIGN_ORG: "true"
+      GF_USERS_AUTO_ASSIGN_ORG_ROLE: "Admin"
     networks:
       - name: traefiknet
     labels:
