@@ -11,6 +11,7 @@
     env:
       GF_USERS_AUTO_ASSIGN_ORG: "true"
       GF_USERS_AUTO_ASSIGN_ORG_ROLE: "Admin"
+      GF_SERVER_ROOT_URL: "https://grafana.dump.hr/"
     networks:
       - name: traefiknet
     labels:
