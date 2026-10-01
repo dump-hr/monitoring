@@ -12,6 +12,10 @@ jobs:
     name: Run Ansible playbook
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      id-token: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -35,9 +39,23 @@ jobs:
         uses: mdgreenwald/mozilla-sops-action@v1.4.1
 
       - name: Login to AWS
+        id: aws
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::763640948377:role/dump-monitoring-github-deploy
+          aws-region: us-east-1
+          output-credentials: true
+          output-env-credentials: false
+
+      - name: Configure dump-monitoring AWS profile
+        env:
+          AWS_ACCESS_KEY_ID: ${{ steps.aws.outputs.aws-access-key-id }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.aws.outputs.aws-secret-access-key }}
+          AWS_SESSION_TOKEN: ${{ steps.aws.outputs.aws-session-token }}
         run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} --profile dump-monitoring
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} --profile dump-monitoring
+          aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID" --profile dump-monitoring
+          aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY" --profile dump-monitoring
+          aws configure set aws_session_token "$AWS_SESSION_TOKEN" --profile dump-monitoring
 
       - name: Run Ansible playbook
         run: |
